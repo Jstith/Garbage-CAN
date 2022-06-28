@@ -2,7 +2,7 @@
 
 *A tool for CAN analysis on the Mach-E*
 
-![logo](https://giphy.com/gifs/fire-trash-dumpster-IoBSF5xl7i32P5KYjq)
+![logo](login.png)
 
 ## Software Stack
 
