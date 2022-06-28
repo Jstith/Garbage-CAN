@@ -6,7 +6,7 @@
 
 ## Software Stack
 
-The front-end webpage was created using free bootstrap templates and code. The bootstrap is hoted on flask, which reads database information from a sqlite3 database file.
+The front-end webpage was created using free bootstrap templates and code. The bootstrap is hosted on flask, which reads database information from a sqlite3 database file.
 
 ## Install
 
@@ -23,3 +23,15 @@ Run `server.py` to start the app. Credentials are `admin` and `password`.
 ```
 python3 server.py
 ```
+
+## Current Features
+
+* Password authentication / sessions (unsecure)
+* List known CAN commands
+* Query list for certain values
+
+## Future Goals
+
+* Add/Remove/Edit commands
+* Send commands to CAN from app
+* Craft multi-command injects
