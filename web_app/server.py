@@ -120,10 +120,16 @@ def modifyEntry():
     _data_string = request.form['data_string']
 
     entry = info.query.filter_by(id = _primary_key).one()
-    entry.message_desc = _message_desc
-    entry.can_interface = _can_interface
-    entry.arb_id = _arb_id
-    entry.data_string = _data_string
+
+    if(_message_desc):
+        entry.message_desc = _message_desc
+    if(_can_interface):
+        entry.can_interface = _can_interface
+    if(_arb_id):
+        entry.arb_id = _arb_id
+    if(_data_string):
+        entry.data_string = _data_string
+
     db.session.commit()
 
     return redirect(url_for('table'))
