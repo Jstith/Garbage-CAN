@@ -62,15 +62,32 @@ def logout():
     flash('You have been logged out. Happy hacking!')
     return redirect(url_for('login'))
 
+
+
 @app.route('/table', methods=['GET', 'POST'])
 def table():
+
     if("user" in session):
         if(request.method == 'GET'):
-            data = info.query.order_by(info.message_desc).all()
-            return render_template('table.html', data=data, search_string='')
+                filter_type = request.args.get('filter')
+                if(filter_type == "message_desc" or not filter_type):
+                    print("Here")
+                    data = info.query.order_by(info.message_desc).all()
+                elif(filter_type == "can_interface"):
+                    data = info.query.order_by(info.can_interface.desc()).all()
+                elif(filter_type == "arb_id"):
+                    data = info.query.order_by(info.arb_id.desc()).all()
+                elif(filter_type == "data_string"):
+                    data = info.query.order_by(info.data_string.desc()).all()
+                elif(filter_type == "id"):
+                    data = info.query.order_by(info.can_interface.desc()).all()
+                      
+
+                return render_template('table.html', data=data, search_string='')
         else:
             # limit search results
             search_string = request.form['search_string']
+            filter_type = request.form['filter_type']
 
             data = info.query.filter(or_(
                 info.message_desc.contains(search_string),
@@ -91,7 +108,6 @@ def addToTable():
     _can_interface = request.form['can_interface']
     _arb_id = request.form['arb_id']
     _data_string = request.form['data_string']
-    
     if(_primary_key and _message_desc and _can_interface and _arb_id and _message_desc):
         info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
     else:
