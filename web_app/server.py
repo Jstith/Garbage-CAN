@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from flask_session import Session
-from sqlalchemy import insert,delete,cast,Numeric
+from sqlalchemy import insert,delete,cast
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 #print(f'basedir is {basedir}')
@@ -97,16 +97,13 @@ def table():
                         search_state['arb_id'] = 0
                 elif(filter_type == "data_string"):
                     if(search_state['data_string'] == 0):
-                        print(search_state['data_string'])
                         data = info.query.order_by(info.data_string.desc()).all()
                         search_state['data_string'] = 1
                     else:
                         data = info.query.order_by(info.data_string.asc()).all()
                         search_state['data_string'] = 0
                 elif(filter_type == "id"):
-                    print(search_state['id'])
                     if(search_state['id'] == 0):
-                        print("Here")
                         data = info.query.order_by(cast(info.id,db.Integer).desc()).all()
                         search_state['id'] = 1
                     else:
