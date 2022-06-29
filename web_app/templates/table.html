@@ -56,6 +56,23 @@
                                     <div class="text-md-end dataTables_filter" id="dataTable_filter"><label class="form-label"></label></div>
                                 </div>
                             </div>
+                            <form action="add" method="POST">
+                                <label for="msgdsc">Message Dessssc:</label><br>
+                                <input type="text" id="message_desc" name="message_desc" value="John"><br>
+                                <label for="canint">CAN INT</label><br>
+                                <input type="text" id="can_interface" name="can_interface" value="John"><br>
+                                <label for="">arb id</label><br>
+                                <input type="text" id="arb_id" name="arb_id" value="arb_id"><br>
+                                <label for="lname">data strng:</label><br>
+                                <input type="text" id="data_string" name="data_string" value="data_string"><br><br>
+                                <input type="submit" value="Submit">
+                              </form> 
+                              <form action="delete" method="POST">
+                                <label for="msgdsc">id to delete:</label><br>
+                                <input type="text" id="primary_key" name="primary_key" value="submit"><br>
+                                <input type="submit" value="Submit">
+                            </form> 
+                              
                             <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                                 <table class="table my-0" id="dataTable">
                                     <thead>
@@ -71,6 +88,7 @@
                                         {% if data %}
                                             {% for entry in data %}
                                                 <tr>
+                                                    <td>{{ entry.id }}</td>
                                                     <td>{{ entry.message_desc }}</td>
                                                     <td>{{ entry.can_interface }}</td>
                                                     <td>{{ entry.arb_id }}</td>

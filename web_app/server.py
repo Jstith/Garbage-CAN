@@ -99,11 +99,30 @@ def addToTable():
 
 @app.route('/delete',methods=['POST'])
 def deleteFromTable():
-    
+
+    _primary_key = request.form['primary_key'] 
+    print(_primary_key)
+    # info.query.filter(info.id == _primary_key).delete()
+    obj = info.query.filter_by(id = _primary_key).one()
+    db.session.delete(obj)
+    db.session.commit()
+
+    return redirect(url_for('table'))
 
 
-def removeFromTable():
+@app.route('/update',methods=['POST'])
+def modifyEntry():
 
+    _primary_key = request.form['primary_key']
+    _message_desc = request.form['message_desc']
+    _can_interface = request.form['can_interface']
+    _arb_id = request.form['arb_id']
+    _data_string = request.form['data_string']
+
+    # info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
+    # info.query.
+
+    return redirect(url_for('table'))
 
 if(__name__ == '__main__'):
     app.run(debug=True)
