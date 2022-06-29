@@ -91,8 +91,11 @@ def addToTable():
     _can_interface = request.form['can_interface']
     _arb_id = request.form['arb_id']
     _data_string = request.form['data_string']
-
-    info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
+    
+    if(_primary_key and _message_desc and _can_interface and _arb_id and _message_desc):
+        info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
+    else:
+        return redirect(url_for('table'))
 
 
     return redirect(url_for('table'))
