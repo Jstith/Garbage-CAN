@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from flask_session import Session
-
+from sqlalchemy import insert,delete
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 #print(f'basedir is {basedir}')
@@ -21,6 +21,21 @@ class info(db.Model): #maps to a table
     can_interface = db.Column(db.String(25))
     arb_id = db.Column(db.String(25)) 
     data_string = db.Column(db.String(20))
+
+
+    def __init__(self, _primary_key:int,_message_desc:str,_can_interface:str,_arb_id:str,_data_string:str):
+        self.primary_key=_primary_key
+        self.message_desc=_message_desc
+        self.can_interface =_can_interface
+        self.arb_id=_arb_id
+        self.data_string=_data_string
+
+    @staticmethod
+    def insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string):
+
+        newInfo = info(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
+        db.session.add(newInfo)
+        db.session.commit()
 
 random.seed(os.urandom(5))
 login_lines = open(os.path.join(basedir, 'static/txt/login_sayings.txt')).readlines()
@@ -67,6 +82,28 @@ def table():
             return render_template('table.html', data=data, search_string=search_string)
     else:
         return redirect(url_for('login'))
+
+@app.route('/add',methods=['POST'])
+def addToTable():
+
+    _primary_key = info.query.count()
+    _message_desc = request.form['message_desc']
+    _can_interface = request.form['can_interface']
+    _arb_id = request.form['arb_id']
+    _data_string = request.form['data_string']
+
+    info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
+
+
+    return redirect(url_for('table'))
+
+@app.route('/delete',methods=['POST'])
+def deleteFromTable():
+    
+
+
+def removeFromTable():
+
 
 if(__name__ == '__main__'):
     app.run(debug=True)
