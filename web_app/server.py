@@ -119,8 +119,12 @@ def modifyEntry():
     _arb_id = request.form['arb_id']
     _data_string = request.form['data_string']
 
-    # info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string)
-    # info.query.
+    entry = info.query.filter_by(id = _primary_key).one()
+    entry.message_desc = _message_desc
+    entry.can_interface = _can_interface
+    entry.arb_id = _arb_id
+    entry.data_string = _data_string
+    db.session.commit()
 
     return redirect(url_for('table'))
 
