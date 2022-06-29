@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from flask_session import Session
-from sqlalchemy import insert,delete
+from sqlalchemy import insert,delete,cast,Numeric
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 #print(f'basedir is {basedir}')
@@ -13,6 +13,10 @@ app.secret_key = 'letsgooo'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '../database.sqlite3')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+search_state = {"message_desc":0,"can_interface":0,"arb_id":0,"data_string":0,"id":0}
+
+
 
 class info(db.Model): #maps to a table    
     #specify the columns
@@ -71,17 +75,45 @@ def table():
         if(request.method == 'GET'):
                 filter_type = request.args.get('filter')
                 if(filter_type == "message_desc" or not filter_type):
-                    print("Here")
-                    data = info.query.order_by(info.message_desc).all()
+                    if(search_state['message_desc'] == 0):
+                        data = info.query.order_by(info.message_desc.desc()).all()
+                        search_state['message_desc'] = 1
+                    else:
+                        data = info.query.order_by(info.message_desc.asc()).all()
+                        search_state['message_desc'] = 0
                 elif(filter_type == "can_interface"):
-                    data = info.query.order_by(info.can_interface.desc()).all()
+                    if(search_state['can_interface'] == 0):
+                        data = info.query.order_by(info.can_interface.desc()).all()
+                        search_state['can_interface'] = 1
+                    else:
+                        data = info.query.order_by(info.arb_id.asc()).all()
+                        search_state['can_interface'] = 0
                 elif(filter_type == "arb_id"):
-                    data = info.query.order_by(info.arb_id.desc()).all()
+                    if(search_state['arb_id'] == 0):
+                        data = info.query.order_by(info.arb_id.desc()).all()
+                        search_state['arb_id'] = 1
+                    else:
+                        data = info.query.order_by(info.arb_id.asc()).all()
+                        search_state['arb_id'] = 0
                 elif(filter_type == "data_string"):
-                    data = info.query.order_by(info.data_string.desc()).all()
+                    if(search_state['data_string'] == 0):
+                        print(search_state['data_string'])
+                        data = info.query.order_by(info.data_string.desc()).all()
+                        search_state['data_string'] = 1
+                    else:
+                        data = info.query.order_by(info.data_string.asc()).all()
+                        search_state['data_string'] = 0
                 elif(filter_type == "id"):
-                    data = info.query.order_by(info.can_interface.desc()).all()
-                      
+                    print(search_state['id'])
+                    if(search_state['id'] == 0):
+                        print("Here")
+                        data = info.query.order_by(cast(info.id,db.Integer).desc()).all()
+                        search_state['id'] = 1
+                    else:
+                        # data = info.query.order_by(cast(info.can_interface,Integer)).all()
+                        data = info.query.order_by(cast(info.id,db.Integer).asc()).all()
+                        search_state['id'] = 0
+
 
                 return render_template('table.html', data=data, search_string='')
         else:
