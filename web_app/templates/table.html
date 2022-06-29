@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
-
+    <style>
+<!--
+    tr { background-color: #DDDDDD}
+    .initial { background-color: #DDDDDD; color:#000000 }
+    .normal { background-color: #CCCCCC }
+    .highlight { background-color: #8888FF }
+//-->
+    </style>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -90,22 +97,22 @@
                                 <table class="table my-0" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Message Description</th>
+                                            <th id="message_order"> Message Description</th>
                                             <th>CAN Interface</th>
                                             <th>Arb-ID</th>
                                             <th>Data String</th>
+                                            <th> ID </th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
                                         {% if data %}
                                             {% for entry in data %}
-                                                <tr>
-                                                    <td>{{ entry.id }}</td>
-                                                    <td>{{ entry.message_desc }}</td>
+                                                <tr onclick="window.location.href = '/insect/';">                                                    <td>{{ entry.message_desc }}</td>
                                                     <td>{{ entry.can_interface }}</td>
                                                     <td>{{ entry.arb_id }}</td>
                                                     <td>{{ entry.data_string }}</td>
+                                                    <td>{{ entry.id }}</td>
                                                 </tr>    
                                             {% endfor %}
                                         {% endif %}  
@@ -134,6 +141,18 @@
     </div>
     <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/theme.js') }}"></script>
-</body>
+
+    <script type="text/javascript">
+        function Buttontoggle()
+        {
+        var t = document.getElementById("message_order");
+        if(t.value=="YES"){
+            t.value="NO";}
+        else if(t.value=="NO"){
+            t.value="YES";}
+        }
+</script>
+
+    </body>
 
 </html>
