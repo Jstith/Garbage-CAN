@@ -29,9 +29,13 @@ python3 server.py
 * Password authentication / sessions (unsecure)
 * List known CAN commands
 * Query list for certain values
+    * search strings
+    * filter values
+* Add/Remove/Edit commands
 
 ## Future Goals
 
-* Add/Remove/Edit commands
+* Make authentication work
 * Send commands to CAN from app
 * Craft multi-command injects
+* mass database adds with CSV
