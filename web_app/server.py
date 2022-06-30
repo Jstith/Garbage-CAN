@@ -1,30 +1,55 @@
+# Imports
 import os, random
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, cast
 from flask_session import Session
 
 
+# Used for relative paths
 basedir = os.path.abspath(os.path.dirname(__file__))
-#print(f'basedir is {basedir}')
 
+# Flask Initialization
 app = Flask(__name__)
 app.secret_key = 'letsgooo'
+
+# Database Initialization
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, '../database.sqlite3')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# Search filter statuses
+search_state = {"message_desc":True,"can_interface":True,"arb_id":True,"data_string":True,"id":True}
+
+# Dabatase Class
 class info(db.Model): #maps to a table    
     #specify the columns
     id = db.Column(db.Integer,primary_key=True)
     message_desc = db.Column(db.String(50)) # db.String(<characters>)
     can_interface = db.Column(db.String(25))
-    arb_id = db.Column(db.String(25)) 
-    data_string = db.Column(db.String(20))
+    arb_id = db.Column(db.Integer) 
+    data_string = db.Column(db.Integer)
+    notes = db.Column(db.String(750))
 
+    def __init__(self, _primary_key:int,_message_desc:str,_can_interface:str,_arb_id:int,_data_string:int,_notes:str):
+        self.primary_key=_primary_key
+        self.message_desc=_message_desc
+        self.can_interface =_can_interface
+        self.arb_id=_arb_id
+        self.data_string=_data_string
+        self.notes=_notes
+
+    @staticmethod
+    def insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string,_notes):
+        newInfo = info(_primary_key,_message_desc,_can_interface,_arb_id,_data_string,_notes)
+        db.session.add(newInfo)
+        db.session.commit()
+
+# Random choice for login quips
 random.seed(os.urandom(5))
 login_lines = open(os.path.join(basedir, 'static/txt/login_sayings.txt')).readlines()
 
+# Default route, redirects to login
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -47,26 +72,186 @@ def logout():
     flash('You have been logged out. Happy hacking!')
     return redirect(url_for('login'))
 
-@app.route('/table', methods=['GET', 'POST'])
+# To view list of all messages
+@app.route('/table', methods=['GET'])
 def table():
     if("user" in session):
-        if(request.method == 'GET'):
-            data = info.query.order_by(info.message_desc).all()
-            return render_template('table.html', data=data, search_string='')
-        else:
-            # limit search results
-            search_string = request.form['search_string']
+    
+        search_string = request.args.get('search_string')
+        filter_type = request.args.get('filter_type')
 
+
+        if(search_string):
+            print("search string")
             data = info.query.filter(or_(
-                info.message_desc.contains(search_string),
-                info.can_interface.contains(search_string),
-                info.arb_id.contains(search_string),
-                info.data_string.contains(search_string)
-            )).order_by(info.message_desc).all()
+            info.message_desc.contains(search_string),
+            info.can_interface.contains(search_string),
+            info.arb_id.contains(search_string),
+            info.data_string.contains(search_string)
+            ))
+        else:
+            print("no search string")
+            search_string = ''
+            data = info.query
+        
+        
+        print(f'{type(filter_type)}')
 
-            return render_template('table.html', data=data, search_string=search_string)
+        if(not filter_type or not filter_type in search_state):
+            # filter_type doesn't exist or is invalid
+            data = data.order_by(info.message_desc.asc()).all()
+            return render_template('table.html', data=data, search_string=search_string, sort_col='message_desc', sort_direction=0)
+        
+        elif(filter_type == 'message_desc'):
+            if(search_state['message_desc']):
+                data = data.order_by(info.message_desc.asc()).all()
+            else:
+                data = data.order_by(info.message_desc.desc()).all()
+            search_state['message_desc'] = not search_state['message_desc']
+
+        elif(filter_type == 'can_interface'):
+            if(search_state['can_interface']):
+                data = data.order_by(info.can_interface.asc()).all()
+            else:
+                data = data.order_by(info.can_interface.desc()).all()
+            search_state['can_interface'] = not search_state['can_interface']
+
+        elif(filter_type == 'arb_id'):
+            if(search_state['arb_id']):
+                data = data.order_by(info.arb_id.asc()).all()
+            else:
+                data = data.order_by(info.arb_id.desc()).all()
+            search_state['arb_id'] = not search_state['arb_id']
+
+        elif(filter_type == 'data_string'):
+            if(search_state['data_string']):
+                data = data.order_by(info.data_string.asc()).all()
+            else:
+                data = data.order_by(info.data_string.desc()).all()
+            search_state['data_string'] = not search_state['data_string']
+
+        elif(filter_type == 'id'):
+            if(search_state['id']):
+                data = data.order_by(cast(info.id,db.Integer).asc()).all()
+            else:
+                data = data.order_by(cast(info.id,db.Integer).desc()).all()
+            search_state['id'] = not search_state['id']
+
+        return render_template('table.html', data=data, search_string=search_string, sort_col=filter_type, sort_direction=search_state[filter_type])
+
     else:
         return redirect(url_for('login'))
 
+# To view and modify message
+@app.route('/inspect/<id>', methods=['GET', 'POST'])
+def inspect(id):
+    if("user" in session):
+        if(request.method == 'GET'):
+            # Populate with data based on passed ID
+            data = info.query.filter(info.id == id).first()
+            if(not data):
+                return redirect(url_for('table'))
+            return render_template('inspect.html', data=data)
+        else:
+            # Update with POST Data
+            return render_template('inspect.html')
+
+# To add a new message
+@app.route('/add',methods=['POST'])
+def addToTable():
+    
+    try:
+        _primary_key = info.query.count()
+        _message_desc = request.form['new_desc']
+        _can_interface = request.form['new_can']
+        _arb_id = int(request.form['new_arb'], 16)
+        _data_string = int(request.form['new_data'], 16)
+        _notes = 'notes'
+        
+        info.insert(_primary_key,_message_desc,_can_interface,_arb_id,_data_string, _notes)
+        return redirect(url_for('table'))
+    
+    except:
+        return redirect(url_for('table'))
+    
+# To update an existing message
+@app.route('/update/<id>',methods=['POST'])
+def modifyEntry(id):
+
+    builder = '/inspect/' + str(id)
+    entry = info.query.filter_by(id=id).one()
+
+    try:
+        entry.notes = request.form['notes']
+        db.session.commit()
+        flash('Notes updated')
+        return redirect(url_for('inspect',id=id))
+    except: ()
+    
+    if(len(request.form['message_desc']) == 0):
+        flash('Missing or invalid message description')
+        # flash that message
+        return redirect(url_for('inspect',id=id))
+
+    entry.message_desc = request.form['message_desc']
+
+    if(len(request.form['can_interface']) == 0):
+        flash('Missing or invalid CAN Interface')
+        # flash that message
+        return redirect(url_for('inspect',id=id))
+
+    entry.can_interface = request.form['can_interface']
+
+    try:
+        # Check for valid hex value
+        entry.arb_id = int(request.form['arb_id'], 16)
+        # Convert to decimal for storage
+        #_arb_id = int(_arb_id)
+    except:
+        flash('Missing or invalid Arb-ID')
+        # flash that message
+        return redirect(url_for('inspect',id=id))
+
+    try:
+        # Check for valid hex value
+        entry.data_string = int(request.form['data_string'], 16)
+        # Convert to decimal for storage
+        #_data_string = int(request.form['data_string'], 16)
+    except:
+        flash('Missing or invalid data string')
+        # flash that message
+        return redirect(url_for('inspect',id=id))
+    
+    try:
+        _notes = request.form['notes']
+
+        if(_notes):
+            entry.notes = _notes
+    except: ()
+ 
+    # If everything passes the checks
+    db.session.commit()
+    flash('nominally updated')
+
+    return redirect(url_for('inspect',id=id))
+
+# To delete an existing message
+@app.route('/delete/<id>',methods=['POST'])
+def deleteFromTable(id):
+
+    _primary_key = id
+    # info.query.filter(info.id == _primary_key).delete()
+    obj = info.query.filter_by(id = _primary_key).one()
+    db.session.delete(obj)
+    db.session.commit()
+
+    return redirect(url_for('table'))
+
+# For future use
+@app.route('/send', methods=['POST'])
+def send(): 
+    return render_template('blank.html')
+
+# Run
 if(__name__ == '__main__'):
     app.run(debug=True)

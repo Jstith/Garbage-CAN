@@ -1,108 +1,106 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+    
+    {% block table_active %}active{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - INL - USCGA</title>
-    <link rel="icon" type="image/gif" sizes="400x400" href="{{ url_for('static', filename='assets/img/art/dumpster_fire.gif') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/Nunito.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/fonts/fontawesome-all.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/untitled.css') }}">
-</head>
-
-<body id="page-top">
-    <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
-            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-car-crash"></i></div>
-                    <div class="sidebar-brand-text mx-3"><span>Garbage-can</span></div>
-                </a>
-                <hr class="sidebar-divider my-0">
-                <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('table') }}"><i class="fas fa-table"></i><span>Known Messages</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="far fa-user-circle"></i><span>Log Out</span></a></li>
-                </ul>
-                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+    {% block content %}
+    <!-- custom content begins -->
+    <div class="container-fluid">
+        <h3 class="text-dark mb-4">Known CAN Messages</h3>
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <p class="text-primary m-0 fw-bold">CAN Messages from the Mach-E</p>
             </div>
-        </nav>
-        <div class="d-flex flex-column" id="content-wrapper">
-            <div id="content">
-                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
-                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
-                        <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
-                            <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="For Future Use..."><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
-                        </form>
+            <div class="card-body">
+                <div class="row">
+                    <form action="table" method="get">
+                        <div class="col-md-6 text-nowrap">
+                            <div class="input-group">
+                                <input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search" id="searchy" name="search_string", value="{{ search_string }}">
+                                <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                    </form>
                     </div>
-                </nav>
-                <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Known CAN Messages</h3>
-                    <div class="card shadow">
-                        <div class="card-header py-3">
-                            <p class="text-primary m-0 fw-bold">CAN Messages from the Mach-E</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <form action="table" method="post">
-                                    <div class="col-md-6 text-nowrap">
-                                        <div class="input-group">
-                                            <input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search" name="search_string", value="{{ search_string }}">
-                                            <button class="btn btn-primary py-0" type="submit"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
+                    
+                    <div class="text-md-end dataTables_filter" id="dataTable_filter">
+                        <div class="dropdown no-arrow"><a class="btn dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" role="button">Add New Message&nbsp;<i class="fas fa-plus fa-fw"></i></a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in">
+                                <form id="new_item" action="/add" method="post">
+                                    <h6 class="dropdown-header">New Message</h6><a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3"></div>
+                                        <div><span class="small text-gray-500"><span style="color: rgb(58, 59, 69); margin-right: 10px;">Description</span></span>
+                                            <input id="new_desc" name="new_desc" type="text"></div>
+                                    </a><a class="dropdown-item d-flex align-items-center">
+                                        <div class="me-3"></div>
+                                        <div style="display: flex; justify-content: space-between;"><span class="small text-gray-500"><span style="color: rgb(58, 59, 69); margin-right: 10px;">CAN Interface</span></span>
+                                            <input id="new_can" name="new_can" type="text"></div>
+                                    </a><a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3"></div>
+                                        <div><span class="small text-gray-500"><span style="color: rgb(58, 59, 69); margin-right: 10px;">Arbitration ID</span></span>
+                                            <input id="new_arb" name="new_arb" type="text"></div>
+                                    </a><a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="me-3"></div>
+                                        <div><span class="small text-gray-500"><span style="color: rgb(58, 59, 69); margin-right: 10px;">Data String</span></span>
+                                            <input id="new_data" name="new_data" type="text"></div>
+                                    </a><a class="dropdown-item"><a href="javascript:{}" onclick="document.getElementById('new_item').submit();" class="btn btn-success btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-check"></i></span><span class="text-white text">Add New Message</span></a></a>
                                 </form>
-                                <div class="col-md-6">
-                                    <div class="text-md-end dataTables_filter" id="dataTable_filter"><label class="form-label"></label></div>
-                                </div>
                             </div>
-                            <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                                <table class="table my-0" id="dataTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Message Description</th>
-                                            <th>CAN Interface</th>
-                                            <th>Arb-ID</th>
-                                            <th>Data String</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        {% if data %}
-                                            {% for entry in data %}
-                                                <tr>
-                                                    <td>{{ entry.message_desc }}</td>
-                                                    <td>{{ entry.can_interface }}</td>
-                                                    <td>{{ entry.arb_id }}</td>
-                                                    <td>{{ entry.data_string }}</td>
-                                                </tr>    
-                                            {% endfor %}
-                                        {% endif %}  
-
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td><strong>Message Description</strong></td>
-                                            <td><strong>CAN Interface</strong></td>
-                                            <td><strong>Arb-ID</strong></td>
-                                            <td><strong>Data String</strong></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+                        </div><label class="form-label"></label>
                     </div>
+                    </form>
+                </div>
+                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                    <table class="table my-0" id="dataTable">
+                        <thead>
+                            <tr>
+                                <form id="sort_form" method="get" action="table">
+                                <input id="search_holder" type="hidden" name="search_string" value="">
+                                <input id="filter_holder" type="hidden" name="filter_type" value="">
+
+                                <th><a href="#" id="message_desc" onclick="submitForm(this.id)" type="button" style="text-decoration: none;">Message Description {% if sort_col == 'message_desc' %} <strong class="fas fa-sort-{% if sort_direction %}amount-up-alt{% else %}amount-down{% endif %}" style="margin-left: 5px;"></strong> {% else %} <i style="margin-left: 16px;"></i>{% endif %}</a></th>
+                                <th><a href="#" id="can_interface" onclick="submitForm(this.id)" type="button" style="text-decoration: none;">CAN Interface {% if sort_col == 'can_interface' %} <strong class="fas fa-sort-{% if sort_direction %}amount-up-alt{% else %}amount-down{% endif %}" style="margin-left: 5px;"></strong> {% else %} <i style="margin-left: 16px;"></i>{% endif %}</a></th>
+                                <th><a href="#" id="arb_id" onclick="submitForm(this.id)" type="button" style="text-decoration: none;">Arb-ID {% if sort_col == 'arb_id' %} <strong class="fas fa-sort-{% if sort_direction %}amount-up-alt{% else %}amount-down{% endif %}" style="margin-left: 5px;"></strong> {% else %} <i style="margin-left: 16px;"></i>{% endif %}</a></th>
+                                <th><a href="#" id="data_string" onclick="submitForm(this.id)" type="button" style="text-decoration: none;">Data String {% if sort_col == 'data_string' %} <strong class="fas fa-sort-{% if sort_direction %}amount-up-alt{% else %}amount-down{% endif %}" style="margin-left: 5px;"></strong> {% else %} <i style="margin-left: 16px;"></i>{% endif %}</a></th>
+                                <th><a href="#" id="id" onclick="submitForm(this.id)" type="button" style="text-decoration: none;">Message ID {% if sort_col == 'id' %} <strong class="fas fa-sort-{% if sort_direction %}amount-up-alt{% else %}amount-down{% endif %}" style="margin-left: 5px;"></strong> {% else %} <i style="margin-left: 16px;"></i>{% endif %}</a></th>
+                                </form>
+                                <script type="text/javascript">
+                                    function submitForm(a) {
+                                        document.getElementById("search_holder").value = document.getElementById("searchy").value;
+                                        document.getElementById("filter_holder").value = a;
+                                        document.getElementById("sort_form").submit();
+                                    }
+                                </script>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% if data %}
+                                {% for entry in data %}
+                                    <tr onclick="document.location='inspect/{{ entry.id }}';" style="cursor: pointer;" onmouseover="this.style.backgroundColor='#d1d3e2'" onmouseleave="this.style.backgroundColor='#00000000'">
+                                    
+                                        <td>{{ entry.message_desc }}</td>
+                                        <td>{{ entry.can_interface }}</td>
+                                        <td>{{ ('%.3x' % entry.arb_id)|upper }}</td>
+                                        <td>{{ ('%.16x' % entry.data_string|int)|upper }}</td>
+                                        <td>{{ ('%.3d' % entry.id) }}</td>
+                                    
+                                    </tr>    
+                                {% endfor %}
+                            {% endif %}  
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><strong>Message Description</strong></td>
+                                <td><strong>CAN Interface</strong></td>
+                                <td><strong>Arb-ID</strong></td>
+                                <td><strong>Data String</strong></td>
+                                <td><strong>Message ID</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
-            <footer class="bg-white sticky-footer">
-                <div class="container my-auto">
-                    <div class="text-center my-auto copyright"><span>INL - USCGA 2022</span></div>
-                </div>
-            </footer>
-        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        </div>
     </div>
-    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/theme.js') }}"></script>
-</body>
-
-</html>
+    {% endblock %}
+    <!-- End of custom content-->
