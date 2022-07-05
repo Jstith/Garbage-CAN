@@ -252,6 +252,10 @@ def deleteFromTable(id):
 def send(): 
     return render_template('blank.html')
 
+@app.route('/interface')
+def interface():
+    return render_template('interface.html')
+
 # Run
 if(__name__ == '__main__'):
     app.run(debug=True)
