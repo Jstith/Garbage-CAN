@@ -45,6 +45,15 @@ class info(db.Model): #maps to a table
         db.session.add(newInfo)
         db.session.commit()
 
+
+class interfaces(db.Model):
+	id = db.Column(db.Integer,primary_key=True)
+	name = db.Column(db.String(50))
+	bitrate = db.Column(db.Integer)
+	data_bitrate = db.Column(db.Integer)
+	can_type = db.Column(db.String(50))
+	# shtutadown = db.Column(db.Boolean)
+
 # Random choice for login quips
 random.seed(os.urandom(5))
 login_lines = open(os.path.join(basedir, 'static/txt/login_sayings.txt')).readlines()
@@ -250,11 +259,51 @@ def deleteFromTable(id):
 # For future use
 @app.route('/send', methods=['POST'])
 def send(): 
-    print(len(request.form))
-    for a in request.form:
-        print(a, request.form[a])
-    os.system('cansend ' + request.form['interface_place'].split()[0] + ' ' + request.form['arb_place'] + '#' + request.form['data_place'])
-    return redirect(url_for('inspect',id=request.form['message_id_place']))
+    #assume already initalized?
+    
+    #Get FD Status
+    _can_interface = request.form['interface_place']
+    _arb_id = request.form['arb_place']
+    _dataString = request.form['data_place']
+    _data = bytes.fromhex(_dataString)
+
+
+    _arb_id = int(_arb_id,16)
+
+
+    obj = interfaces.query.filter(interfaces.name.contains(_can_interface)).one() #filter for interface
+    _fd_msg = obj.can_type #gather pertinant data
+    _bitrate = obj.bitrate
+    _data_bitrate = obj.data_bitrate
+    _name = obj.name
+    
+
+
+    if(_fd_msg==1):
+        _fd_msg = True
+    else:
+        _fd_msg = False
+  
+    with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
+            print("message creation start")
+
+            msg = can.Message(
+                arbitration_id=_arb_id, data=_data, is_extended_id=False
+            )
+            
+
+            try:
+                print("try sending")
+
+                bus.send(msg)
+                print("Message sent?")
+                flash("Message sent?")
+            except can.CanError:
+                print("Message NOT sent")
+                flash("Message not sent :(")
+
+    
+    return redirect(url_for('table'))
 
 @app.route('/interface')
 def interface():
