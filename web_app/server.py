@@ -250,7 +250,11 @@ def deleteFromTable(id):
 # For future use
 @app.route('/send', methods=['POST'])
 def send(): 
-    return render_template('blank.html')
+    print(len(request.form))
+    for a in request.form:
+        print(a, request.form[a])
+    os.system('cansend ' + request.form['interface_place'].split()[0] + ' ' + request.form['arb_place'] + '#' + request.form['data_place'])
+    return redirect(url_for('inspect',id=request.form['message_id_place']))
 
 @app.route('/interface')
 def interface():
@@ -258,4 +262,5 @@ def interface():
 
 # Run
 if(__name__ == '__main__'):
+    os.system('initialize.sh')
     app.run(debug=True)
