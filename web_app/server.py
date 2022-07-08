@@ -248,13 +248,19 @@ def deleteFromTable(id):
     return redirect(url_for('table'))
 
 # For future use
-@app.route('/send', methods=['POST'])
-def send(): 
+@app.route('/send/<id>', methods=['POST'])
+def send(id): 
     print(len(request.form))
     for a in request.form:
         print(a, request.form[a])
-    os.system('cansend ' + request.form['interface_place'].split()[0] + ' ' + request.form['arb_place'] + '#' + request.form['data_place'])
-    return redirect(url_for('inspect',id=request.form['message_id_place']))
+    
+    can = request.form['interface_place'].split()[0]
+    if('can0' in can):
+        tag = '##'
+    else:
+        tag = '#'
+    flash('cansend ' + request.form['interface_place'].split()[0] + ' ' + request.form['arb_place'] + tag + request.form['data_place'])
+    return redirect(url_for('inspect',id=id))
 
 @app.route('/interface')
 def interface():
@@ -262,5 +268,5 @@ def interface():
 
 # Run
 if(__name__ == '__main__'):
-    os.system('initialize.sh')
+    #os.system('initialize.sh')
     app.run(debug=True)

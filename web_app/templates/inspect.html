@@ -41,17 +41,15 @@
                                     document.getElementById('interface_place').value = document.getElementById('m_can').value;
                                     document.getElementById('arb_place').value = document.getElementById('m_arb').value;
                                     document.getElementById('data_place').value = document.getElementById('m_data').value;
-                                    document.getElementById('message_id_place') = "tes{{ data.id }}";
                                     document.getElementById('send_can').submit();
                                 }
                             </script>
 
-                            <form id="send_can" action="/send" method="post">
+                            <form id="send_can" action="/send/{{data.id}}" method="post">
                                 <input id="interface_place" name="interface_place" type="hidden">
                                 <input id="arb_place" name="arb_place" type="hidden">
                                 <input id="data_place" name="data_place" type="hidden">
-                                <input id="message_id_place" name="message_id_place" type="hidden">
-                                <a href="javascript:sendToCan()" class="btn btn-link d-block btn-google w-100" role="button" style="text-decoration: none;">Send Command to CAN (TBD)</a>
+                                <a href="javascript:sendToCan()" class="btn btn-link d-block btn-google w-100" role="button" style="text-decoration: none;">Send Command to CAN</a>
                             </form>
                             <a class="btn btn-link d-block btn-facebook w-100" role="button" style="margin-top: 20px; text-decoration: none;">Send Command to Composer (TBD)</a>
                         </div>
