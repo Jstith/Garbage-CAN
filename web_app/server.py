@@ -46,10 +46,7 @@ class info(db.Model): #maps to a table
         db.session.add(newInfo)
         db.session.commit()
 
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 class interfaces(db.Model):
 	id = db.Column(db.Integer,primary_key=True)
 	name = db.Column(db.String(50))
@@ -58,10 +55,7 @@ class interfaces(db.Model):
 	can_type = db.Column(db.String(50))
 	# shtutadown = db.Column(db.Boolean)
 
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
 # Random choice for login quips
 random.seed(os.urandom(5))
 login_lines = open(os.path.join(basedir, 'static/txt/login_sayings.txt')).readlines()
