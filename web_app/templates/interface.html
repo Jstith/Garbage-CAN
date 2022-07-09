@@ -6,13 +6,39 @@
     <!-- custom content begins -->
     <div class="container-fluid">
         <h3 class="text-dark mb-4">Interface Control</h3>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="card shadow">
             <div class="card-header py-3">
                 <p class="text-primary m-0 fw-bold">Add, Remove, and Toggle CAN Interfaces</p>
             </div>
             <div class="card-body">
+                
+                <form id="init1" action="/init" method="post">
+                    <input name="type" hidden="true" value="initialize.sh">
+                    <a href="javascript:{}" onclick="document.getElementById('init1').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize All</span></a>
+                </form>
+
+                <form id="init2" action="/init" method="post">
+                    <input name="type" hidden="true" value="local_can_startup.sh">
+                    <a href="javascript:{}" onclick="document.getElementById('init2').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize Single</span></a>
+                </form>
+
+                <form id="stop" action="/init" method="post">
+                    <input name="type" hidden="true" value="stop.sh">
+                    <a href="javascript:{}" onclick="document.getElementById('stop').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Stop All Interfaces</span></a>
+                </form>
+
                 <div class="row">
+
+                    
                     <div class="text-md-end dataTables_filter" id="dataTable_filter">
+
                         <div class="dropdown no-arrow"><a class="btn dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" role="button">Add New Interface&nbsp;<i class="fas fa-plus fa-fw"></i></a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in">
                                 <form id="new_interface" action="/add" method="post">

@@ -1,5 +1,5 @@
 # Imports
-import os, random
+import os, random, pathlib
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, cast
@@ -264,7 +264,7 @@ def send():
     #assume already initalized?
     
     #Get FD Status
-    _can_interface = request.form['interface_place']
+    _can_interface = request.form['interface_place'].split()[0]
     _arb_id = request.form['arb_place']
     _dataString = request.form['data_place']
     _data = bytes.fromhex(_dataString)
@@ -310,6 +310,13 @@ def send():
 @app.route('/interface')
 def interface():
     return render_template('interface.html')
+
+@app.route('/init', methods=['POST'])
+def init():
+    path = pathlib.Path(__file__).parent.resolve() / request.form['type']
+    os.system(path)
+    flash('Ran script ' + request.form['type'])
+    return redirect(url_for('interface'))
 
 # Run
 if(__name__ == '__main__'):
