@@ -52,9 +52,8 @@ class interfaces(db.Model):
 	name = db.Column(db.String(50))
 	bitrate = db.Column(db.Integer)
 	data_bitrate = db.Column(db.Integer)
-	can_type = db.Column(db.String(50))
+	can_type = db.Column(db.Boolean)
 	# shtutadown = db.Column(db.Boolean)
-
 
 # Random choice for login quips
 random.seed(os.urandom(5))
@@ -313,7 +312,8 @@ def send(id):
 
 @app.route('/interface')
 def interface():
-    return render_template('interface.html')
+    data=interfaces.query
+    return render_template('interface.html',data=data)
 
 @app.route('/init', methods=['POST'])
 def init():
@@ -329,5 +329,5 @@ def command():
 
 # Run
 if(__name__ == '__main__'):
-    os.system('initialize.sh')
+    #os.system('initialize.sh')
     app.run(debug=True)
