@@ -22,7 +22,8 @@
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link {% block table_active %}{% endblock %}" href="{{ url_for('table') }}"><i class="fas fa-table"></i><span>Messages</span></a></li>
-                    <li class="nav-item"><a class="nav-link {% block interface_active %}{% endblock %}" href="{{ url_for('interface') }}"><i class="fas fa-table"></i><span>Interfaces</span></a></li>
+                    <li class="nav-item"><a class="nav-link {% block command_active %}{% endblock %}" href="{{ url_for('command') }}"><i class="fas fa-terminal"></i><span>Command</span></a></li>
+                    <li class="nav-item"><a class="nav-link {% block interface_active %}{% endblock %}" href="{{ url_for('interface') }}"><i class="fas fa-keyboard"></i><span>Interfaces</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="far fa-user-circle"></i><span>Log Out</span></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>

@@ -46,12 +46,12 @@
                                 }
                             </script>
 
-                            <form id="send_can" action="/send" method="post">
+                            <form id="send_can" action="/send/{{data.id}}" method="post">
                                 <input id="interface_place" name="interface_place" type="hidden">
                                 <input id="arb_place" name="arb_place" type="hidden">
                                 <input id="data_place" name="data_place" type="hidden">
                                 <!--<input id="message_id_place" name="message_id_place" type="hidden">-->
-                                <a href="javascript:sendToCan()" class="btn btn-link d-block btn-google w-100" role="button" style="text-decoration: none;">Send Command to CAN (TBD)</a>
+                                <a href="javascript:sendToCan()" class="btn btn-link d-block btn-google w-100" role="button" style="text-decoration: none;">Send Command to CAN</a>
                             </form>
                             <a class="btn btn-link d-block btn-facebook w-100" role="button" style="margin-top: 20px; text-decoration: none;">Send Command to Composer (TBD)</a>
                         </div>
@@ -106,37 +106,6 @@
                                                     <form id="delete_form" action="/delete/{{data.id}}" method="post"></form>
                                                 
                                                    
-                                                </div>
-                                            
-
-                                                <!-- Button to Open the Modal -->
-                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                                                    Open modal
-                                                </button>
-                                                
-                                                <!-- The Modal -->
-                                                <div class="modal" id="myModal">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                    
-                                                            <!-- Modal Header -->
-                                                            <div class="modal-header">
-                                                            <h4 class="modal-title">Modal Heading</h4>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            </div>
-                                                    
-                                                            <!-- Modal body -->
-                                                            <div class="modal-body">
-                                                            Modal body..
-                                                            </div>
-                                                    
-                                                            <!-- Modal footer -->
-                                                            <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                                            </div>
-                                                    
-                                                        </div>
-                                                    </div>
                                                 </div>
                                         </div>
                                     </div>

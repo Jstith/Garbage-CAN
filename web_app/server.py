@@ -259,53 +259,57 @@ def deleteFromTable(id):
     return redirect(url_for('table'))
 
 # For future use
-@app.route('/send', methods=['POST'])
-def send(): 
+@app.route('/send/<id>', methods=['POST'])
+def send(id): 
     #assume already initalized?
-    
+    print('trying to send')
     #Get FD Status
     _can_interface = request.form['interface_place'].split()[0]
     _arb_id = request.form['arb_place']
     _dataString = request.form['data_place']
     _data = bytes.fromhex(_dataString)
 
-
     _arb_id = int(_arb_id,16)
 
+    try:
+        obj = interfaces.query.filter(interfaces.name.contains(_can_interface)).first() #filter for interface
+        _fd_msg = obj.can_type #gather pertinant data
+        _bitrate = obj.bitrate
+        _data_bitrate = obj.data_bitrate
+        _name = obj.name
+    except:
+        print("Interface not included in table.")
+        return redirect(url_for('table'))
 
-    obj = interfaces.query.filter(interfaces.name.contains(_can_interface)).one() #filter for interface
-    _fd_msg = obj.can_type #gather pertinant data
-    _bitrate = obj.bitrate
-    _data_bitrate = obj.data_bitrate
-    _name = obj.name
+
     
-
-
     if(_fd_msg==1):
         _fd_msg = True
     else:
         _fd_msg = False
   
-    with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
-            print("message creation start")
+    try:
+        with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
+                print("message creation start")
+                msg = can.Message(
+                    arbitration_id=_arb_id, data=_data, is_extended_id=False
+                )
+                try:
+                    bus.send(msg)
+                    print("Message sent.")
+                    flash("Message sent: " + _arb_id + '#' + _data)
+                except can.CanError:
+                    print("Message NOT sent")
+                    flash("Message not sent :(")
+    except:
+        print("No such device")
+        flash("No such device, choose an interface that's initialised and in the database.")
 
-            msg = can.Message(
-                arbitration_id=_arb_id, data=_data, is_extended_id=False
-            )
-            
+    if('custom' in id):
+        return redirect(url_for('command'))
+    else:
+        return redirect(url_for('inspect', id=id))
 
-            try:
-                print("try sending")
-
-                bus.send(msg)
-                print("Message sent?")
-                flash("Message sent?")
-            except can.CanError:
-                print("Message NOT sent")
-                flash("Message not sent :(")
-
-    
-    return redirect(url_for('table'))
 
 @app.route('/interface')
 def interface():
@@ -314,9 +318,14 @@ def interface():
 @app.route('/init', methods=['POST'])
 def init():
     path = pathlib.Path(__file__).parent.resolve() / request.form['type']
-    os.system(path)
+    print(str(path) + ' 500000')
+    os.system(str(path) + ' 500000')
     flash('Ran script ' + request.form['type'])
     return redirect(url_for('interface'))
+
+@app.route('/command')
+def command():
+    return render_template('command.html')
 
 # Run
 if(__name__ == '__main__'):
