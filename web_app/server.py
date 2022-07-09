@@ -257,16 +257,23 @@ def deleteFromTable(id):
 
     return redirect(url_for('table'))
 
+<<<<<<< HEAD
 @app.route('/send', methods=['POST'])
 def send(): 
+=======
+# For future use
+@app.route('/send/<id>', methods=['POST'])
+def send(id): 
+>>>>>>> 5f531a0ae7f19c62f1221e7719c6e34191ad694c
     #assume already initalized?
-    
+    print('trying to send')
     #Get FD Status
     _can_interface = request.form['interface_place'].split()[0]
     _arb_id = request.form['arb_place']
     _dataString = request.form['data_place']
     
     try:
+<<<<<<< HEAD
         _data = bytes.fromhex(_dataString)
         _arb_id = int(_arb_id,16)
     
@@ -302,6 +309,30 @@ def send():
         return redirect(url_for('table'))
     
     return redirect(url_for('table'))
+=======
+        with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
+                print("message creation start")
+                msg = can.Message(
+                    arbitration_id=_arb_id, data=_data, is_extended_id=False
+                )
+                try:
+                    bus.send(msg)
+                    print("Message sent.")
+                    flash("Message sent: " + _arb_id + '#' + _data)
+                except can.CanError:
+                    print("Message NOT sent")
+                    flash("Message not sent :(")
+    except:
+        print("No such device")
+        flash("No such device, choose an interface that's initialised and in the database.")
+
+    if('custom' in id):
+        return redirect(url_for('command'))
+    else:
+        return redirect(url_for('inspect', id=id))
+
+
+>>>>>>> 5f531a0ae7f19c62f1221e7719c6e34191ad694c
 @app.route('/interface')
 def interface():
     data=interfaces.query
@@ -310,9 +341,14 @@ def interface():
 @app.route('/init', methods=['POST'])
 def init():
     path = pathlib.Path(__file__).parent.resolve() / request.form['type']
-    os.system(path)
+    print(str(path) + ' 500000')
+    os.system(str(path) + ' 500000')
     flash('Ran script ' + request.form['type'])
     return redirect(url_for('interface'))
+
+@app.route('/command')
+def command():
+    return render_template('command.html')
 
 # Run
 if(__name__ == '__main__'):
