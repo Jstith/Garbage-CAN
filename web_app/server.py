@@ -266,44 +266,55 @@ def send():
     _can_interface = request.form['interface_place'].split()[0]
     _arb_id = request.form['arb_place']
     _dataString = request.form['data_place']
-    _data = bytes.fromhex(_dataString)
-
-    _arb_id = int(_arb_id,16)
-
+    
     try:
-        obj = interfaces.query.filter(interfaces.name.contains(_can_interface)).first() #filter for interface
-        _fd_msg = obj.can_type #gather pertinant data
-        _bitrate = obj.bitrate
-        _data_bitrate = obj.data_bitrate
-        _name = obj.name
+        _data = bytes.fromhex(_dataString)
+        _arb_id = int(_arb_id,16)
+        try:
+            obj = interfaces.query.filter(interfaces.name.contains(_can_interface)).first() #filter for interface
+            _fd_msg = obj.can_type #gather pertinant data
+            _bitrate = obj.bitrate
+            _data_bitrate = obj.data_bitrate
+            _name = obj.name
+
+            if(_fd_msg==1):
+                _fd_msg = True
+            else:
+                _fd_msg = False
+            
+                try:
+                    with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
+                            print("message creation start")
+                            msg = can.Message(
+                                arbitration_id=_arb_id, data=_data, is_extended_id=False
+                            )
+                            try:
+                                bus.send(msg)
+                                print("Message sent.")
+                                flash("Message sent.")
+                            except can.CanError:
+                                print("Message NOT sent")
+                                flash("Message not sent :(")
+                except:
+                    print("No such device")
+                    flash("No such device, choose an interface that's initialised and in the database.")
+
+
+
+
+        except:
+            print("Interface not included in table.")
+            return redirect(url_for('table'))
+
     except:
-        print("Interface not included in table.")
+        print("Enter good data")
         return redirect(url_for('table'))
+
+    
 
 
     
-    if(_fd_msg==1):
-        _fd_msg = True
-    else:
-        _fd_msg = False
-  
-    try:
-        with can.interface.Bus(_name, bustype="socketcan",bitrate=_bitrate,data_bitrate=_data_bitrate,fd = _fd_msg) as bus:
-                print("message creation start")
-                msg = can.Message(
-                    arbitration_id=_arb_id, data=_data, is_extended_id=False
-                )
-                try:
-                    bus.send(msg)
-                    print("Message sent.")
-                    flash("Message sent.")
-                except can.CanError:
-                    print("Message NOT sent")
-                    flash("Message not sent :(")
-    except:
-        print("No such device")
-        flash("No such device, choose an interface that's initialised and in the database.")
-
+    
     
     return redirect(url_for('table'))
 
