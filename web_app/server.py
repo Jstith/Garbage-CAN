@@ -3,7 +3,6 @@ import os, random, pathlib
 from flask import Flask, render_template, url_for, request, redirect, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, cast
-from flask_session import Session
 
 import can
 from can import Message
