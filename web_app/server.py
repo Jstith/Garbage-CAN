@@ -260,7 +260,7 @@ def deleteFromTable(id):
 # For future use
 @app.route('/send/<id>', methods=['POST'])
 def send(id): 
->>>>>>> 5f531a0ae7f19c62f1221e7719c6e34191ad694c
+    
     #assume already initalized?
     print('trying to send')
     #Get FD Status
@@ -304,6 +304,9 @@ def send(id):
         return redirect(url_for('table'))
     
     return redirect(url_for('table'))
+
+
+    
 @app.route('/interface')
 def interface():
     data=interfaces.query
