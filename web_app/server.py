@@ -297,16 +297,17 @@ def send(id):
                         print("Message NOT sent")
                         flash("Message not sent :(")
         except:
-            print("Enter a valid interface.")
-            return redirect(url_for('table'))
+            flash("Interface not found.")
     except:
-        print("Enter a valid CAN data Frame and Arb ID.")
-        return redirect(url_for('table'))
-    
-    return redirect(url_for('table'))
+        flash("Enter a valid CAN data frame and Arb ID.")
+
+        # return redirect(url_for('table'))
+    if "custom" in id:
+        return redirect(url_for('command'))
+    else:
+        return redirect(url_for('inspect',id=id))
 
 
-    
 @app.route('/interface')
 def interface():
     data=interfaces.query
@@ -327,4 +328,4 @@ def command():
 # Run
 if(__name__ == '__main__'):
     #os.system('initialize.sh')
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0')
