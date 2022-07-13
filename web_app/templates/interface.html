@@ -21,17 +21,17 @@
                 
                 <form id="init1" action="/init" method="post">
                     <input name="type" hidden="true" value="initialize.sh">
-                    <a href="javascript:{}" onclick="document.getElementById('init1').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize All</span></a>
+                    <a href="javascript:{}" onclick="document.getElementById('init1').submit();" class="btn btn-primary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize All</span></a>
                 </form>
 
                 <form id="init2" action="/init" method="post">
                     <input name="type" hidden="true" value="local_can_startup.sh">
-                    <a href="javascript:{}" onclick="document.getElementById('init2').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize Single</span></a>
+                    <a href="javascript:{}" onclick="document.getElementById('init2').submit();" class="btn btn-primary btn-icon-split mt-3" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize Single</span></a>
                 </form>
 
                 <form id="stop" action="/init" method="post">
                     <input name="type" hidden="true" value="stop.sh">
-                    <a href="javascript:{}" onclick="document.getElementById('stop').submit();" class="btn btn-secondary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Stop All Interfaces</span></a>
+                    <a href="javascript:{}" onclick="document.getElementById('stop').submit();" class="btn btn-primary btn-icon-split mt-3" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Stop All Interfaces</span></a>
                 </form>
 
                 <div class="row">
@@ -71,9 +71,6 @@
                                 <th><a href="#" id="message_desc" style="text-decoration: none;">Interface Name</a></th>
                                 <th><a href="#" id="message_desc" style="text-decoration: none;">Bitrate</a></th>
                                 <th><a href="#" id="message_desc" style="text-decoration: none;">CAN Type</a></th>
-                                <th><a href="#" id="message_desc" style="text-decoration: none;">Initialize</a></th>
-                                <th><a href="#" id="message_desc" style="text-decoration: none;">Shut Down</a></th>
-                                <th><a href="#" id="message_desc" style="text-decoration: none;">Remove</a></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,9 +79,9 @@
                                 {% for entry in data %}
                                     <tr onclick="" style="cursor: pointer;" onmouseover="this.style.backgroundColor='#d1d3e2'" onmouseleave="this.style.backgroundColor='#00000000'">
                                     
-                                        <td>{{ entry.interface_name }}</td>
-                                        <td>{{ entry.interface_bitrate }}</td>
-                                        <td>{{ entry.interface_type }}</td>          
+                                        <td>{{ entry.name }}</td>
+                                        <td>{{ entry.bitrate }}</td>
+                                        <td>{{ entry.can_type }}</td>          
                                     </tr>    
                                 {% endfor %}
                             {% endif %}  
@@ -95,9 +92,6 @@
                                 <td><strong>Interface Name</strong></td>
                                 <td><strong>Bitrate</strong></td>
                                 <td><strong>CAN Type</strong></td>
-                                <td><strong>Initialize</strong></td>
-                                <td><strong>Shut Down</strong></td>
-                                <td><strong>Remove</strong></td>
                             </tr>
                         </tfoot>
                     </table>
