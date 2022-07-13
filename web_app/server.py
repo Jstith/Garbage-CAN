@@ -321,7 +321,7 @@ def init():
     flash('Ran script ' + request.form['type'])
     return redirect(url_for('interface'))
 
-@app.route('/cant',methods=['POST']
+@app.route('/cant',methods=['POST'])
 def cant():
     path = pathlib.Path(__file__).parent.resolve() / request.form['command']
     os.system(str(path))
