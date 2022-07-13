@@ -20,17 +20,17 @@
             <div class="card-body">
                 
                 <form id="init1" action="/init" method="post">
-                    <input name="type" hidden="true" value="initialize.sh">
+                    <input name="type" hidden="true" value="scripts/interfaces/initialize.sh">
                     <a href="javascript:{}" onclick="document.getElementById('init1').submit();" class="btn btn-primary btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize All</span></a>
                 </form>
 
                 <form id="init2" action="/init" method="post">
-                    <input name="type" hidden="true" value="local_can_startup.sh">
+                    <input name="type" hidden="true" value="scripts/interfaces/local_can_startup.sh">
                     <a href="javascript:{}" onclick="document.getElementById('init2').submit();" class="btn btn-primary btn-icon-split mt-3" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Initialize Single</span></a>
                 </form>
 
                 <form id="stop" action="/init" method="post">
-                    <input name="type" hidden="true" value="stop.sh">
+                    <input name="type" hidden="true" value="scripts/interfaces/stop.sh">
                     <a href="javascript:{}" onclick="document.getElementById('stop').submit();" class="btn btn-primary btn-icon-split mt-3" role="button"><span class="text-white-50 icon"><i class="fas fa-arrow-right"></i></span><span class="text-white text">Stop All Interfaces</span></a>
                 </form>
 

@@ -342,6 +342,15 @@ def exfil():
         return render_template('exfil.html',data=return_data)
     return render_template('exfil.html')
     
+@app.route('/cant', methods=['GET', 'POST'])
+def cant():
+    if(request.method == 'GET'):
+        return render_template('cant.html')
+    
+    path = pathlib.Path(__file__).parent.resolve() / request.form['type']
+    os.system(str(path))
+    flash('Ran script ' + request.form['type'])
+    return redirect(url_for('cant'))
 
 # Run
 if(__name__ == '__main__'):
