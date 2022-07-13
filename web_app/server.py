@@ -5,7 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, cast
 
 import can
-from can import Message
+from can.message import Message
+
 # Used for relative paths
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -323,6 +324,24 @@ def init():
 @app.route('/command')
 def command():
     return render_template('command.html')
+
+@app.route('/exfil', methods=['GET', 'POST'])
+def exfil():
+    if(request.method == 'POST'):    
+        
+        data = [request.form['d_can'], request.form['d_arb'], request.form['d_mask'], request.form['d_time']]
+        prepStr = 'timeout ' + data[3] + ' candump ' + data[0] + ',' + data[1] + ':' + data[2] + ' -t A > dump_file'
+        
+        os.system(prepStr)
+        return_data = open('./dump_file', 'r').read()
+        os.system('rm ./dump_file')
+
+        print(return_data)
+        flash('Capture Executed!')
+
+        return render_template('exfil.html',data=return_data)
+    return render_template('exfil.html')
+    
 
 # Run
 if(__name__ == '__main__'):
